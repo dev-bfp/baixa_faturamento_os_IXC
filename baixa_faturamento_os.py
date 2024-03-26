@@ -182,7 +182,6 @@ acesso_faturamento_OS();
 # Busca a quantidade de registros e realiza split
 registro1 = driver.find_element(by=By.CLASS_NAME, value= 'pPageStat').get_attribute("innerHTML").replace(" ","").replace(".","").split("/");
 print(registro1[1] + ' registros')
-# int(registro1[1])
 
 i = 0
 run_code(int(registro1[1]))
