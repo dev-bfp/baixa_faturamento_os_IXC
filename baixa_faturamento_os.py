@@ -181,3 +181,4 @@ registro1 = driver.find_element(by=By.XPATH, value= '//*[@id="1_grid"]/div/div[3
 registro1 = driver.find_element(by=By.XPATH, value= '//*[@id="1_grid"]/div/div[3]/span[2]').get_attribute("innerHTML").replace(" ","").replace(".","").split("/")
 i = 0
 run_code(int(registro1[1]))
+#teste
