@@ -106,55 +106,44 @@ def acesso_faturamento_OS():
 def baixa_faturamento_ativacao():   
     # Realiza o faturamento da OS
     click_byname('finalizar_pedido_aux') # finalizar pedido
-    print("botão finalizar pedido")
     time.sleep(2)
     
     driver.implicitly_wait(10) # seconds
     click_byid('previsaoN') # insere previsão "não"
-    print("botão previsão N")
     time.sleep(0.1)
     
     driver.implicitly_wait(10) # seconds
     click_byclass('disab') #save
-    print("save")
     time.sleep(0.5)
     
     driver.implicitly_wait(10) # seconds
     click_byid('finalizar_saida') #finalizar saida
-    print("botão finalizar saida")
     time.sleep(1)
     
     driver.implicitly_wait(10) # seconds
     send_byid('id_carteira_cobranca','2') #inserir carteira de cobrança
-    print("inserir carteira de cobrança")
     
     driver.implicitly_wait(10) # seconds
     send_byid('id_carteira_cobranca',Keys.TAB) # TAB no campo
-    print("tab")
     time.sleep(1)
     
     driver.implicitly_wait(10) # seconds
-    click_byxpath('//*[@id="7_form"]/div[2]/button[1]') # salvar e gerar financeiro 
-    print("botão salvar e gerar financeiro")
+    click_byxpath('//*[@id="7_form"]/div[2]/button[1]') # salvar e gerar financeiro
     
     driver.implicitly_wait(10) # seconds
     click_byid('validar_finalizar') # validar e finalizar
-    print("botão validar e finalizar")
     time.sleep(1)
     
     driver.implicitly_wait(10) # seconds
     click_byid('vd_saida_fechamento_btn_close') #fechar aba
-    print("botão fechar aba fechamento")
     time.sleep(1)
     
     driver.implicitly_wait(10) # seconds
     click_byid('vd_saida_btn_close') # fechar aba venda
-    print("botão fechar aba venda")
     time.sleep(0.5)
     
     driver.implicitly_wait(10) # seconds
     click_byxpath('//*[@id="1_grid"]/div/div[3]/div[2]/span[1]/i[3]')# atualizar
-    print("botão atualizar")
     time.sleep(2)
 
 def run_code(qtds):
@@ -165,9 +154,6 @@ def run_code(qtds):
         registro1 = driver.find_element(by=By.CLASS_NAME, value= 'pPageStat').get_attribute("innerHTML").replace(" ","").replace(".","").split("/")
         print(registro1[1] + ' registros restantes' + '\n')
         baixa_faturamento_ativacao()
-        # time.sleep(1)
-        # registro1 = driver.find_element(by=By.XPATH, value= '//*[@id="1_grid"]/div/div[3]/span[2]').get_attribute("innerHTML").replace(" ","").replace(".","").split("/");
-        # print(registro1[1] + ' registros restantes')
         i += 1
 
     else:
