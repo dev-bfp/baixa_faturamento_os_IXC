@@ -169,6 +169,4 @@ acesso_faturamento_OS();
 registro1 = driver.find_element(by=By.CLASS_NAME, value= 'pPageStat').get_attribute("innerHTML").replace(" ","").replace(".","").split("/");
 print(registro1[1] + ' registros')
 
-# i = 0
-# run_code(int(registro1[1]))
-
+run_code(int(registro1[1]))
