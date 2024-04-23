@@ -98,14 +98,14 @@ def acesso_faturamento_OS():
     send_byid('id_input_menu','pedido') # insere pesquisa
     click_byxpath('//*[@id="grupo_menu07deb040a8a504d5c262c87677a5bf95"]/ul/li[2]/ul/li[3]') # acessa menu pedido de ordem de serviço
     click_byxpath('//*[@id="1_grid"]/div/div[3]/div/span[2]/i') # abre menu da grid
-    click_byxpath('//*[@id="1_grid"]/div/div[3]/nav[2]/ul/li') # insere filtro salvo
-    click_byxpath('//*[@id="1_grid"]/div/div[4]/div/table/thead/tr/th[10]/div') #ordena para crescente
-    click_byxpath('//*[@id="1_grid"]/div/div[4]/div/table/thead/tr/th[10]/div') #ordena para decrescente
-    time.sleep(2)
+    click_byxpath('/html/body/div[2]/div/div[3]/nav[2]/ul/li') # insere filtro salvo
+    click_byxpath('//*[@id="1_grid"]/div/div[5]/div/table/thead/tr/th[2]') #ordena para crescente
+    click_byxpath('//*[@id="1_grid"]/div/div[5]/div/table/thead/tr/th[2]') #ordena para decrescente
+    time.sleep(3)
     
 def baixa_faturamento_ativacao():   
     # Realiza o faturamento da OS
-    click_byname('finalizar_pedido_aux') # finalizar pedido
+    click_byname('btn_finalizar_pedido') # finalizar pedido
     time.sleep(2)
     
     driver.implicitly_wait(10) # seconds
@@ -128,7 +128,7 @@ def baixa_faturamento_ativacao():
     time.sleep(1)
     
     driver.implicitly_wait(10) # seconds
-    click_byxpath('//*[@id="7_form"]/div[2]/button[1]') # salvar e gerar financeiro
+    click_byxpath('/html/body/form[3]/div[2]/button[1]') # salvar e gerar financeiro
     
     driver.implicitly_wait(10) # seconds
     click_byid('validar_finalizar') # validar e finalizar
@@ -151,8 +151,8 @@ def run_code(qtds):
     i = 0
     while i < qtds :
         driver.implicitly_wait(10) # seconds
-        registro1 = driver.find_element(by=By.CLASS_NAME, value= 'pPageStat').get_attribute("innerHTML").replace(" ","").replace(".","").split("/")
-        print(registro1[1] + ' registros restantes' + '\n')
+        total_itens = driver.find_element(by=By.CLASS_NAME, value= 'pPageStat').get_attribute("innerHTML").replace(" ","").replace(".","").split("/")
+        print(total_itens[1] + ' registros restantes' + '\n')
         baixa_faturamento_ativacao()
         i += 1
 
@@ -163,10 +163,25 @@ def run_code(qtds):
 # ----------------------------------------------------------------------------------------
 
 login_ixc();
+
+try:
+    driver.implicitly_wait(5) # seconds
+    click_byxpath("/html/body/div[8]/vg-modal/div[1]/div[4]/vg-button")
+    click_byxpath("/html/body/div[8]/vg-modal/div[2]/div[4]/vg-button[2]")
+    time.sleep(2)
+except:
+    time.sleep(2)
+
+    
 acesso_faturamento_OS();
 
 # Busca a quantidade de registros e realiza split
-registro1 = driver.find_element(by=By.CLASS_NAME, value= 'pPageStat').get_attribute("innerHTML").replace(" ","").replace(".","").split("/");
-print(registro1[1] + ' registros')
-
-run_code(int(registro1[1]))
+itens = driver.find_element(by=By.CLASS_NAME, value= 'pPageStat').get_attribute("innerHTML")
+total_itens = itens.replace(" ","").replace(".","").split("/");
+if itens == "0 itens":
+    print("Não há faturamentos de OS pendentes")
+    driver.quit()
+    quit()
+else:
+    print(total_itens[1] + ' registros')
+    run_code(int(total_itens[1]))
