@@ -179,7 +179,7 @@ acesso_faturamento_OS();
 itens = driver.find_element(by=By.CLASS_NAME, value= 'pPageStat').get_attribute("innerHTML")
 total_itens = itens.replace(" ","").replace(".","").split("/");
 if itens == "0 itens":
-    print("Não há faturamentos de OS pendentes")
+    print("Não há faturamento de OS's pendentes")
     driver.quit()
     quit()
 else:
