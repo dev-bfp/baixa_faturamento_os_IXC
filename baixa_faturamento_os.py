@@ -1,4 +1,5 @@
 import time
+import os
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
@@ -6,17 +7,29 @@ from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.chrome.options import Options
 from datetime import datetime
-from Tokens_IXC import *
 
-# ----------- Options chrome -----------
 options = Options()
 prefs = {"credentials_enable_service": False,
          "profile.password_manager_enabled": False}
 options.add_experimental_option("prefs", prefs)
 options.add_experimental_option("excludeSwitches", ["enable-automation"])
 
-# ----------- Configura Webdriver -----------
-driver = webdriver.Chrome(options=options, service=Service(caminho_webdriver))
+
+def search_local_file(folder, file_name):
+    for file in folder:
+        caminho = os.path.join(file, file_name)
+        if os.path.exists(caminho):
+            print(f'Caminho Chromedriver: {caminho}')
+            return caminho
+    print("Arquivo não encontrado em nenhuma das pastas.")
+    return None
+
+
+caminhos = [r"C:\Users\DEV\Desktop\EXE", r"C:\Users\Financeiro\OneDrive\dev-bfp\GitHub\Monalisa"]  # PC Stive | PC Brian
+link_webdriver = search_local_file(caminhos, 'chromedriver.exe')
+
+driver = webdriver.Chrome(options=options, service=Service(link_webdriver))
+driver.implicitly_wait(20)  # seconds
 
 
 # ----------- find element by id -----------
@@ -32,8 +45,8 @@ def clear_byid(id):
     driver.find_element(by=By.ID, value=id).clear()
 
 
-def get_info_byid(id):
-    driver.find_element(by=By.ID, value=id).get_attribute("innerHTML")
+def get_info_byid(id, atributo="innerHTML"):
+    driver.find_element(by=By.ID, value=id).get_attribute(atributo)
 
 
 # ----------- find element by name -----------
@@ -88,25 +101,31 @@ def get_info_byclass(x):
 
 
 def login_ixc():
-    # Realiza login no sistema IXC
-    link = url_sistema
+    link = 'https://crm.redfibra.com.br/adm.php'
     driver.get(link)
     driver.maximize_window()
 
-    send_byid('email', email)  # insere email
-    send_byid('senha', senha)  # insere senha
-    click_byid('entrar')  # clica em entrar
+    send_byid('email', 'automacao@redfibra.com.br')  # insere email
+    click_byid('btn-next-login')
+    time.sleep(1)
+    send_byid('password', 'G1W!q4te29LX')  # insere senha
+    click_byid('btn-enter-login')  # clica em entrar
     time.sleep(1)
     try:
-        click_byid('entrar')  # clica em entrar
-        driver.implicitly_wait(10)  # seconds
+        click_byid('btn-enter-login')  # clica em entrar
+        driver.implicitly_wait(20)  # seconds
         try:
-            click_byxpath('//*[@id="warning"]/vg-body/div/vg-button[2]')  # fecha pop-up
+            click_byxpath('//*[@id="slide_0"]/div[1]/i')  # fecha pop-up
+            try:
+                click_byid('closeButton')
+                time.sleep(1)
+            except:
+                pass
         except:
-            time.sleep(0.5)
+            time.sleep(1)
+
     except:
         try:
-            driver.implicitly_wait(10)  # seconds
             click_byxpath('//*[@id="warning"]/vg-body/div/vg-button[2]')  # fecha pop-up
         except:
             time.sleep(1)
@@ -115,102 +134,103 @@ def login_ixc():
 
 
 def acesso_faturamento_OS():
-    # Acessa o campo de faturamento de OS
-    driver.implicitly_wait(10)  # seconds
+    driver.implicitly_wait(20)  # seconds
     click_byid('id_input_menu')  # abre pesquisa
     send_byid('id_input_menu', 'pedido')  # insere pesquisa
-    click_byxpath(
-        '//*[@id="grupo_menu07deb040a8a504d5c262c87677a5bf95"]/ul/li[2]/ul/li[3]')  # acessa menu pedido de ordem de serviço
-    click_byxpath('//*[@id="1_grid"]/div/div[3]/div/span[2]/i')  # abre menu da grid
-    click_byxpath('/html/body/div[2]/div/div[3]/nav[2]/ul/li')  # insere filtro salvo
-    click_byxpath('//*[@id="1_grid"]/div/div[5]/div/table/thead/tr/th[2]')  # ordena para crescente
-    click_byxpath('//*[@id="1_grid"]/div/div[5]/div/table/thead/tr/th[2]')  # ordena para decrescente
-    time.sleep(3)
+    click_byxpath('//*[@id="grupo_menu1d86c02f14a5c80984dc87f3187c0396"]/ul/li[3]/ul/li[3]/a')  # acessa menu pedido de ordem de serviço
+    time.sleep(2)
+    click_byxpath('//*[@id="1_grid"]/div/div[4]/div[1]/span[2]/i')  # abre menu da grid
+    click_byxpath('//*[@id="1_grid"]/div/div[4]/nav[2]/ul/li')  # insere filtro salvo
+    time.sleep(2)
 
 
 def baixa_faturamento_ativacao():
-    # Realiza o faturamento da OS
     click_byname('btn_finalizar_pedido')  # finalizar pedido
+    print("botão finalizar pedido")
     time.sleep(2)
 
-    driver.implicitly_wait(10)  # seconds
+    filial = driver.find_element(by=By.ID, value='filial_id').get_attribute('value')
+
+    driver.implicitly_wait(20)  # seconds
     click_byid('previsaoN')  # insere previsão "não"
+    print("botão previsão N")
     time.sleep(0.1)
 
-    driver.implicitly_wait(10)  # seconds
-    click_byclass('disab')  # save
+    driver.implicitly_wait(20)  # seconds
+    click_byxpath('//*[@id="2_form"]/div[2]/button[2]')  # save
+    print("save")
     time.sleep(0.5)
 
-    driver.implicitly_wait(10)  # seconds
+    driver.implicitly_wait(20)  # seconds
     click_byid('finalizar_saida')  # finalizar saida
-    time.sleep(1)
+    print("botão finalizar saida")
+    time.sleep(1.5)
 
-    driver.implicitly_wait(10)  # seconds
-    send_byid('id_carteira_cobranca', '2')  # inserir carteira de cobrança
+    driver.implicitly_wait(20)  # seconds
+    carteira_cobranca = '1' if filial == "1" else "8"
+    send_byid('id_carteira_cobranca', carteira_cobranca)  # inserir carteira de cobrança
+    print("inserir carteira de cobrança")
 
-    driver.implicitly_wait(10)  # seconds
+    driver.implicitly_wait(20)  # seconds
     send_byid('id_carteira_cobranca', Keys.TAB)  # TAB no campo
+    print("tab")
     time.sleep(1)
 
-    driver.implicitly_wait(10)  # seconds
-    click_byxpath('/html/body/form[3]/div[2]/button[1]')  # salvar e gerar financeiro
+    driver.implicitly_wait(20)  # seconds
+    click_byxpath('//*[@id="3_form"]/div[2]/button[1]')  # salvar e gerar financeiro
+    print("botão salvar e gerar financeiro")
 
-    driver.implicitly_wait(10)  # seconds
+    driver.implicitly_wait(20)  # seconds
     click_byid('validar_finalizar')  # validar e finalizar
-    time.sleep(1)
+    print("botão validar e finalizar")
 
-    driver.implicitly_wait(10)  # seconds
+    driver.implicitly_wait(20)  # seconds
     click_byid('vd_saida_fechamento_btn_close')  # fechar aba
-    time.sleep(1)
-
-    driver.implicitly_wait(10)  # seconds
-    click_byid('vd_saida_btn_close')  # fechar aba venda
+    print("botão fechar aba fechamento")
     time.sleep(0.5)
 
-    driver.implicitly_wait(10)  # seconds
-    click_byxpath('//*[@id="1_grid"]/div/div[3]/div[2]/span[1]/i[3]')  # atualizar
+    driver.implicitly_wait(20)  # seconds
+    click_byid('vd_saida_btn_close')  # fechar aba venda
+    print("botão fechar aba venda")
+    time.sleep(0.5)
+
+    driver.implicitly_wait(20)  # seconds
+    click_byxpath('//*[@id="1_grid"]/div/div[4]/div[2]/span[1]/i[3]')  # atualizar
+    print("botão atualizar")
     time.sleep(2)
 
 
 def run_code(qtds):
-    # Loop para realizar os faturamentos
     i = 0
-    while i < qtds:
-        driver.implicitly_wait(10)  # seconds
-        total_itens = driver.find_element(by=By.CLASS_NAME, value='pPageStat').get_attribute("innerHTML").replace(" ",
-                                                                                                                  "").replace(
-            ".", "").split("/")
-        print(total_itens[1] + ' registros restantes' + '\n')
+    while i < int(qtds):
+        driver.implicitly_wait(20)  # seconds
+        try:
+            registros = driver.find_element(by=By.XPATH, value='//*[@id="1_grid"]/div/div[4]/div[2]/span[2]')
+            registros.get_attribute("innerHTML").replace(" ", "").replace(".", "").split("/")
+            print(registro1[1] + ' registros restantes' + '\n')
+        except:
+            pass
         baixa_faturamento_ativacao()
         i += 1
 
     else:
-        print("Não há faturamento de OS's pendentes")
-        driver.quit()
-        quit()
+        print("-")
+        print("-")
+        print("-")
+        print("Fim")
 
 
 # ----------------------------------------------------------------------------------------
 
 login_ixc();
-
-try:
-    driver.implicitly_wait(5)  # seconds
-    click_byxpath("/html/body/div[8]/vg-modal/div[1]/div[4]/vg-button")
-    click_byxpath("/html/body/div[8]/vg-modal/div[2]/div[4]/vg-button[2]")
-    time.sleep(2)
-except:
-    time.sleep(2)
-
 acesso_faturamento_OS();
 
-# Busca a quantidade de registros e realiza split
-itens = driver.find_element(by=By.CLASS_NAME, value='pPageStat').get_attribute("innerHTML")
-total_itens = itens.replace(" ", "").replace(".", "").split("/");
-if itens == "0 itens":
-    print("Não há faturamento de OS's pendentes")
+registro1 = driver.find_element(by=By.XPATH, value='//*[@id="1_grid"]/div/div[4]/div[2]/span[2]').get_attribute("innerHTML")
+print(registro1)
+if registro1 == "0 itens":
     driver.quit()
-    quit()
 else:
-    print(total_itens[1] + ' registros')
-    run_code(int(total_itens[1]))
+    registro1 = registro1.replace(" ", "").replace(".", "").split("/");
+    print(registro1[1] + ' registros')
+    run_code(int(registro1[1]))
+    # run_code("10")
