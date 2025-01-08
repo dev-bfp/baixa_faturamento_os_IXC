@@ -25,7 +25,7 @@ def search_local_file(folder, file_name):
     return None
 
 
-caminhos = [r"C:\Users\DEV\Desktop\EXE", r"C:\Users\Financeiro\OneDrive\dev-bfp\GitHub\Monalisa"]  # PC Stive | PC Brian
+caminhos = [r"C:\Users\DEV\Desktop\EXE", r"C:\Users\Financeiro\OneDrive\dev-bfp\GitHub\IXC - baixa_faturamento_os"]  # PC Stive | PC Brian
 link_webdriver = search_local_file(caminhos, 'chromedriver.exe')
 
 driver = webdriver.Chrome(options=options, service=Service(link_webdriver))
@@ -222,15 +222,15 @@ def run_code(qtds):
 
 # ----------------------------------------------------------------------------------------
 
-# login_ixc();
-# acesso_faturamento_OS();
+login_ixc();
+acesso_faturamento_OS();
 
-# registro1 = driver.find_element(by=By.XPATH, value='//*[@id="1_grid"]/div/div[4]/div[2]/span[2]').get_attribute("innerHTML")
-# print(registro1)
-# if registro1 == "0 itens":
-#     driver.quit()
-# else:
-#     registro1 = registro1.replace(" ", "").replace(".", "").split("/");
-#     print(registro1[1] + ' registros')
-#     run_code(int(registro1[1]))
+registro1 = driver.find_element(by=By.XPATH, value='//*[@id="1_grid"]/div/div[4]/div[2]/span[2]').get_attribute("innerHTML")
+print(registro1)
+if registro1 == "0 itens":
+    driver.quit()
+else:
+    registro1 = registro1.replace(" ", "").replace(".", "").split("/");
+    print(registro1[1] + ' registros')
+    run_code(int(registro1[1]))
     # run_code("10")
