@@ -101,14 +101,14 @@ def get_info_byclass(x):
 
 
 def login_ixc():
-    link = 'https://crm.redfibra.com.br/adm.php'
+    link = 'sua_url'
     driver.get(link)
     driver.maximize_window()
 
-    send_byid('email', 'automacao@redfibra.com.br')  # insere email
+    send_byid('email', 'seu_email')  # insere email
     click_byid('btn-next-login')
     time.sleep(1)
-    send_byid('password', 'G1W!q4te29LX')  # insere senha
+    send_byid('password', 'sua_senha')  # insere senha
     click_byid('btn-enter-login')  # clica em entrar
     time.sleep(1)
     try:
